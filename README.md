@@ -24,6 +24,9 @@ github ssh 키 설정
 ```
 ```
 os 환경  macos
+git 버전 
+```jeonyeongjin05222811@c6r9s4 git-practice % git --version```
+git version 2.53.0
 ```
 ```터미널 조작 로그 기록```
 ```현재 위치 확인 pwd 결과: /Users/jeonyeongjin05222811/git-practice```
