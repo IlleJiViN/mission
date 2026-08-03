@@ -32,33 +32,66 @@ os 환경  macos
 ```.		..		.git		README.md```
 ```빈 파일 만들기 touch [파일 이름] #이 파일 이름이 있으면 이 파일의 생성 시간 등이 나옴```
 ```
+
 touch helo
+
 ```
+
 ```
+
 디렉터리 생성 mkdir
+
 ```
+
 ```
+
 mkdir rid
+
 ```
+
 ```
-파일 이동/이름 바꾸기 mv```
+파일 이동/이름 바꾸기 mv
+
 ```
-이름 바꾸기 mv [파일명] [바꿀 이름]```
+
+이름 바꾸기 mv [파일명] [바꿀 이름]
+
 ```
-사용법: mv [파일명] [옮길 디렉터리]```
+
 ```
-mv helo rid```
+
+사용법: mv [파일명] [옮길 디렉터리]
+
 ```
-파일 복사 cp [복사할 파일 명] [복사할 위치]```
+mv helo rid
+
 ```
-cp helo rid```
+
 ```
-권한 확인법 ls -l```
+
+파일 복사 cp [복사할 파일 명] [복사할 위치]
+
 ```
+
+```
+
+cp helo rid
+
+```
+
+```
+
+권한 확인법 ls -l
+
+```
+
+```
+
 ex)jeonyeongjin05222811@c6r9s4 git-practice % ls -l 
 total 16
--rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md```
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
 
+```
 ```
 ```권한 수정법 chmod```
 ```8진수로 표현, rwx순으로,1은 가능 0은 불가능 유저, 모든 사용자, 그룹```
