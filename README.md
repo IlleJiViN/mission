@@ -760,5 +760,8 @@ core.logallrefupdates=true
 core.ignorecase=true
 core.precomposeunicode=true
 :
-
 ```
+https -> http
+
+git-practice 하위 폴더에서 git add . 시도
+-> cd . - > git add . #해결
