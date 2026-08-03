@@ -585,17 +585,157 @@ macOS의 `localhost:8080`으로 접속했을 때 컨테이너 내부 NGINX 서�
 ```text
 http://localhost:8080
 ```
-
+```
 브라우저 접속 화면을 캡처한 뒤 저장소에 추가하고 다음과 같이 첨부한다.
 
 
+# 저장소 최상위로 이동
+cd ~/git-practice
 
+# 1. NGINX 컨테이너 중지·목록·재시작
+docker stop custom-nginx-container #중지
+docker ps #프로세스 확인
+docker ps -a #멈춘 프로세스도 확인가능
+docker start custom-nginx-container #다시 키기
+docker ps #켜진거 확인
+
+```
+```
+jeonyeongjin05222811@c6r9s4 git-practice % docker ps
+CONTAINER ID   IMAGE              COMMAND                  CREATED       STATUS          PORTS                                     NAMES
+ebc8999669fc   ubuntu             "sleep infinity"         2 hours ago   Up 2 hours                                                ubuntu-background
+48bd860b90bc   custom-nginx:1.0   "/docker-entrypoint.…"   2 hours ago   Up 35 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   custom-nginx-container
+jeonyeongjin05222811@c6r9s4 git-practice % docker stop custom-nginx-container 
+custom-nginx-container
+jeonyeongjin05222811@c6r9s4 git-practice % docker ps
+CONTAINER ID   IMAGE     COMMAND            CREATED       STATUS       PORTS     NAMES
+ebc8999669fc   ubuntu    "sleep infinity"   2 hours ago   Up 2 hours             ubuntu-background
+jeonyeongjin05222811@c6r9s4 git-practice % docker start custom-nginx-container
+custom-nginx-container
+jeonyeongjin05222811@c6r9s4 git-practice % docker ps
+CONTAINER ID   IMAGE              COMMAND                  CREATED       STATUS         PORTS                                     NAMES
+ebc8999669fc   ubuntu             "sleep infinity"         2 hours ago   Up 2 hours                                               ubuntu-background
+48bd860b90bc   custom-nginx:1.0   "/docker-entrypoint.…"   2 hours ago   Up 3 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   custom-nginx-container
+```
+
+
+# 2. 로그와 리소스 확인
+curl http://localhost:8080
+docker logs custom-nginx-container #로그 확인
+
+```
+192.168.215.1 - - [03/Aug/2026:10:08:12 +0000] "GET / HTTP/1.1" 200 261 "-" "curl/8.7.1" "-"
+192.168.215.1 - - [03/Aug/2026:10:09:13 +0000] "GET / HTTP/1.1" 200 261 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" "-"
+2026/08/03 10:09:13 [error] 23#23: *2 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 192.168.215.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8080", referrer: "http://localhost:8080/"
+192.168.215.1 - - [03/Aug/2026:10:09:13 +0000] "GET /favicon.ico HTTP/1.1" 404 555 "http://localhost:8080/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" "-"
+2026/08/03 11:03:01 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+
+```
+docker stats #리소스 확인 
+CONTAINER ID   NAME                     CPU %     MEM USAGE / LIMIT     MEM %     NET I/O         BLOCK I/O        PIDS 
+ebc8999669fc   ubuntu-background        0.00%     1.203MiB / 15.67GiB   0.01%     1.12kB / 126B   22.5MB / 4.1kB   1 
+48bd860b90bc   custom-nginx-container   0.00%     5.27MiB / 15.67GiB    0.03%     830B / 126B     1.92MB / 4.1kB   7 
+ 
+
+# 3. exec로 컨테이너 내부 명령 실행
+docker exec custom-nginx-container sh -c 'pwd && ls && echo "exec test success"'
+
+```
+jeonyeongjin05222811@c6r9s4 git-practice % docker exec custom-nginx-container sh -c 'pwd && ls && echo "exec test success"'
+/
+bin
+dev
+docker-entrypoint.d
+docker-entrypoint.sh
+etc
+home
+lib
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+exec test success
+````
+#가상 환경에 들어가서 cli로 활용가능
+
+# exec 종료 후에도 컨테이너가 유지되는지 확인
+docker ps
+
+# 5. Docker 볼륨 생성
+docker volume create mydata
+docker volume ls
+
+```
+
+jeonyeongjin05222811@c6r9s4 git-practice % docker volume create mydata                                                     
+mydata
+jeonyeongjin05222811@c6r9s4 git-practice % docker volume ls 
+DRIVER    VOLUME NAME
+local     mydata
+
+```
 
 
 ```
+# 6. 첫 번째 컨테이너에 볼륨 연결
+docker run -d \
+  --name vol-test \
+  -v mydata:/data \
+  ubuntu sleep infinity #슬래쉬 쓰면 다음줄로 넘겨도 이어짐
+
+# 볼륨에 파일 작성 및 확인
+docker exec vol-test bash -c 'echo "persistent data" > /data/hello.txt'
+docker exec vol-test cat /data/hello.txt
+# 이어짐, 컨테이너에서 파일 없애면 로컬에서도 없어짐 포인터라 생각하면 편함.
+```
+
+```
+jeonyeongjin05222811@c6r9s4 git-practice % docker exec vol-test2 cat /data/hello.txt
+Error response from daemon: No such container: vol-test2
+jeonyeongjin05222811@c6r9s4 git-practice % docker exec vol-test bash -c 'echo "persistent data" > /data/hello.txt' 
+Error response from daemon: No such container: vol-test
+jeonyeongjin05222811@c6r9s4 git-practice % docker run -d \
+> --name vol-test \ 
+> -v mydata:/data \
+> ubuntu sleep infinity 
+e7e9da54e11bd2c213dedb367aaddc20bd73037750fa9e0a7b5872dcbed22c4b
+jeonyeongjin05222811@c6r9s4 git-practice % docker exec vol-test bash -c 'echo "persistent data" > /data/hello.txt' 
+jeonyeongjin05222811@c6r9s4 git-practice % docker exec vol-test cat /data/hello.txt 
+persistent data
+
+```
+
+# 7. 첫 번째 컨테이너 삭제
+docker rm -f vol-test #rm 은 remove 약자
+
+# 8. 같은 볼륨을 새 컨테이너에 연결
+docker run -d \
+  --name vol-test2 \
+  -v mydata:/data \
+  ubuntu sleep infinity
+
+# 9. Git 환경 확인
+git --version
+git config --list
+
+docker exec vol-test2 cat /data/hello.txt
+
+```
+
 깃허브에 푸쉬 작업
+
 ```
+
 ```
+
 jeonyeongjin05222811@c6r9s4 git-practice % git push -u origin main
 Enumerating objects: 3, done.
 Counting objects: 100% (3/3), done.
@@ -603,13 +743,16 @@ Delta compression using up to 6 threads
 Compressing objects: 100% (2/2), done.
 Writing objects: 100% (3/3), 2.02 KiB | 2.02 MiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+
 ```
+
 ```
+
 깃허브 연동 로그
 jeonyeongjin05222811@c6r9s4 git-practice % git config --list
 credential.helper=osxkeychain
-user.name=IlleJiViN
-user.email=jeonyeongjin0522@gmail.com
+user.name=**********
+user.email=jeony*************@gmail.com
 core.repositoryformatversion=0
 core.filemode=true
 core.bare=false
@@ -617,4 +760,5 @@ core.logallrefupdates=true
 core.ignorecase=true
 core.precomposeunicode=true
 :
+
 ```
