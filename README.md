@@ -1,6 +1,8 @@
+```
 미션 이름
 내 컴퓨터에 개발자용 '작업실' 꾸미기
-
+```
+```
 미션 목표
 도커 설치 및 기본 점검
 도커 기본 운영 명령 수행
@@ -19,17 +21,26 @@ compose 운영 명령어 습득
 환경 변수 활용
 github ssh 키 설정
 (HTTPS 대신SSH 로 푸시가 가능하도록 키를 등록하고 동작 확인)
-
-
-
+```
+```
+os 환경  macos
+```
+```터미널 조작 로그 기록```
+```현재 위치 확인 pwd 결과: /Users/jeonyeongjin05222811/git-practice```
+```목록 확인(숨김 파일 포함) ls -al #- 뒤 옵션 a는 전ㅂ누 보이게함, l은 세부사항, 수정 가능 여부 등 접근 권한 보임```
+```결과 ls -a 
+.		..		.git		README.md```
 도커 버전 확인
 커맨드
 docker --version
 결과
 Docker version 28.5.2, build ecc6942
+```
+```
 도커 인포
 커맨드 docker info
-결과
+```
+```
 docker info
 Client:
  Version:    28.5.2
@@ -127,15 +138,33 @@ Server:
    Base: fd07:b51a:cc66:d000::/56, Size: 64
 
 WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set
-
+```
+```
 도커 이미지
-
-jeonyeongjin05222811@c6r9s4 git-practice % docker images 
+```
+```
+jeonyeongjin05222811@c6r9s4 git-practice % docker images #로컬 이미지 목록
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 
 만든 이미지가 없어서 아무것도 뜨지 않음
-현재 작동중인 이미지
+```
+```
+
+전체 컨테이너 목록 
 커맨드
 jeonyeongjin05222811@c6r9s4 git-practice % docker ps -a 
 결과
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+```
+깃허브에 푸쉬 작업
+```
+```
+jeonyeongjin05222811@c6r9s4 git-practice % git push -u origin main
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 6 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 2.02 KiB | 2.02 MiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+```
