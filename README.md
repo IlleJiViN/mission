@@ -48,7 +48,36 @@ touch helo
 mkdir rid
 
 ```
+```
 
+파일 지우기 rm, 디렉터리 지우기 rmdir
+
+rm -r "디렉터리 이름" 으로도 지워짐 recursive(재귀적으로 하위 폴더를 다 지우기 때문에)
+
+touch abd
+rm abd
+mkdir adbdf
+
+```
+```
+rmdir 로그
+
+jeonyeongjin05222811@c6r9s4 nginx-custom % mkdir df   
+jeonyeongjin05222811@c6r9s4 nginx-custom % ls
+df              Dockerfile      index.html
+jeonyeongjin05222811@c6r9s4 nginx-custom % rmdir df 
+jeonyeongjin05222811@c6r9s4 nginx-custom % ls
+Dockerfile      index.html
+jeonyeongjin05222811@c6r9s4 nginx-custom % 
+
+rm 로그
+
+eonyeongjin05222811@c6r9s4 nginx-custom % touch ad  
+jeonyeongjin05222811@c6r9s4 nginx-custom % ls 
+ad              Dockerfile      index.html
+jeonyeongjin05222811@c6r9s4 nginx-custom % rm ad 
+jeonyeongjin05222811@c6r9s4 nginx-custom % ls
+Dockerfile      index.html
 ```
 파일 이동/이름 바꾸기 mv
 
@@ -254,6 +283,311 @@ jeonyeongjin05222811@c6r9s4 git-practice % docker ps -a
 결과
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 ```
+
+"도커 실행 
+jeonyeongjin05222811@c6r9s4 git-practice % docker run hello-world 
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+```
+
+```실행```
+```
+jeonyeongjin05222811@c6r9s4 git-practice % docker run -it --name ubuntu-practice ubuntu bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+ed819469700f: Pull complete 
+a3679419df18: Pull complete 
+Digest: sha256:3131b4cc82a783df6c9df078f86e01819a13594b865c2cad47bd1bca2b7063bb
+Status: Downloaded newer image for ubuntu:latest
+root@3a47eb89625c:/# ls 
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@3a47eb89625c:/# echo 
+
+root@3a47eb89625c:/# echo "hi" 
+hi
+```
+
+## 7. 기존 Dockerfile 기반 커스텀 이미지 제작
+
+### 7.1 선택한 기존 베이스 이미지
+
+커스텀 이미지의 베이스로 `nginx:alpine` 이미지를 선택했다.
+
+`nginx:alpine`은 경량 Linux 배포판인 Alpine Linux 위에 NGINX 웹 서버가 설치된 이미지이다. 웹 서버를 직접 설치하지 않고 정적 HTML 파일만 교체하면 간단한 웹 서비스를 만들 수 있어 선택했다.
+
+### 7.2 적용한 커스텀 포인트
+
+* 기본 NGINX 화면을 직접 작성한 `index.html`로 교체했다.
+* 이미지 작성자와 용도를 `LABEL`로 기록했다.
+* NGINX가 사용하는 80번 포트를 `EXPOSE`로 명시했다.
+
+각 커스텀 포인트의 목적은 다음과 같다.
+
+| 커스텀 항목            | 목적                           |
+| ----------------- | ---------------------------- |
+| `COPY index.html` | 기본 NGINX 페이지를 사용자 정의 페이지로 변경 |
+| `LABEL`           | 이미지 작성자와 용도 기록               |
+| `EXPOSE 80`       | 컨테이너가 사용하는 웹 포트 명시           |
+
+---
+
+### 7.3 정적 웹페이지 작성
+
+#### 실행 명령
+
+```bash
+cat > index.html <<'EOF'
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Mission</title>
+</head>
+<body>
+  <h1>Docker Custom NGINX</h1>
+  <p>nginx:alpine 기반으로 만든 커스텀 이미지입니다.</p>
+  <p>작성자: IlleJiViN</p>
+</body>
+</html>
+EOF
+```
+
+#### 파일 내용 확인
+
+```bash
+cat index.html
+```
+
+#### 출력 결과
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Mission</title>
+</head>
+<body>
+  <h1>Docker Custom NGINX</h1>
+  <p>nginx:alpine 기반으로 만든 커스텀 이미지입니다.</p>
+  <p>작성자: IlleJiViN</p>
+</body>
+</html>
+```
+
+---
+
+### 7.4 Dockerfile 작성
+
+#### Dockerfile 내용
+
+```dockerfile
+FROM nginx:alpine
+
+LABEL maintainer="IlleJiViN"
+LABEL description="Custom NGINX image for Docker mission"
+
+COPY index.html /usr/share/nginx/html/index.html
+
+EXPOSE 80
+```
+
+#### 파일 내용 확인 명령
+
+```bash
+cat Dockerfile
+```
+
+#### 출력 결과
+
+```dockerfile
+FROM nginx:alpine
+
+LABEL maintainer="IlleJiViN"
+LABEL description="Custom NGINX image for Docker mission"
+
+COPY index.html /usr/share/nginx/html/index.html
+
+EXPOSE 80
+```
+
+---
+
+### 7.5 커스텀 이미지 빌드
+
+#### 실행 명령
+
+```bash
+docker build -t custom-nginx:1.0 .
+```
+
+#### 핵심 출력 결과
+
+```text
+[+] Building 6.8s (7/7) FINISHED
+ => [internal] load build definition from Dockerfile
+ => [internal] load metadata for docker.io/library/nginx:alpine
+ => [1/2] FROM docker.io/library/nginx:alpine
+ => [2/2] COPY index.html /usr/share/nginx/html/index.html
+ => exporting to image
+ => => writing image sha256:510eaf3c9388c7ec95e18407ebc73ef5029a0161cf269ca17f7b3ffaa0159f1b
+ => => naming to docker.io/library/custom-nginx:1.0
+```
+
+#### 검증 내용
+
+Dockerfile을 기반으로 `custom-nginx:1.0` 이미지가 정상적으로 생성되었다.
+
+---
+
+### 7.6 생성된 이미지 확인
+
+#### 실행 명령
+
+```bash
+docker images
+```
+
+#### 출력 결과
+
+```text
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+custom-nginx   1.0       510eaf3c9388   6 seconds ago   62.4MB
+ubuntu         latest    de7345b16e94   2 weeks ago     100MB
+hello-world    latest    e2ac70e7319a   4 months ago    10.1kB
+```
+
+#### 검증 내용
+
+`custom-nginx` 이미지가 `1.0` 태그로 생성되었으며 이미지 크기는 62.4MB임을 확인했다.
+
+---
+
+### 7.7 커스텀 컨테이너 실행
+
+#### 실행 명령
+
+```bash
+docker run -d \
+  --name custom-nginx-container \
+  -p 8080:80 \
+  custom-nginx:1.0
+```
+
+#### 출력 결과
+
+```text
+48bd860b90bc51ca588c6dc1533153ad4c9c17d347abebae5c2b412f1d6884ce
+```
+
+출력된 문자열은 생성된 컨테이너의 ID이다.
+
+---
+
+### 7.8 컨테이너 실행 상태 확인
+
+#### 실행 명령
+
+```bash
+docker ps
+```
+
+#### 출력 결과
+
+```text
+CONTAINER ID   IMAGE              COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+48bd860b90bc   custom-nginx:1.0   "/docker-entrypoint.…"   6 seconds ago   Up 5 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   custom-nginx-container
+```
+
+#### 검증 내용
+
+`custom-nginx-container` 컨테이너가 정상적으로 실행 중임을 확인했다.
+
+포트 매핑은 다음과 같이 설정되었다.
+
+```text
+macOS의 8080번 포트 → 컨테이너의 80번 포트
+```
+
+---
+
+## 8. 포트 매핑 및 접속 증거
+
+### 8.1 HTTPS 접속 실패 관찰
+
+처음에는 HTTPS로 접속을 시도했다.
+
+#### 실행 명령
+
+```bash
+curl https://localhost:8080
+```
+
+#### 출력 결과
+
+```text
+curl: (35) LibreSSL/3.3.6: error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version
+```
+
+#### 원인
+
+현재 NGINX 컨테이너에는 HTTPS 인증서와 TLS 설정을 적용하지 않았으며 HTTP 서비스만 실행 중이다. 따라서 `https://`가 아니라 `http://`로 접속해야 한다.
+
+---
+
+### 8.2 HTTP 접속 성공
+
+#### 실행 명령
+
+```bash
+curl http://localhost:8080
+```
+
+#### 출력 결과
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Mission</title>
+</head>
+<body>
+  <h1>Docker Custom NGINX</h1>
+  <p>nginx:alpine 기반으로 만든 커스텀 이미지입니다.</p>
+  <p>작성자: IlleJiViN</p>
+</body>
+</html>
+```
+
+#### 검증 내용
+
+macOS의 `localhost:8080`으로 접속했을 때 컨테이너 내부 NGINX 서버가 직접 작성한 `index.html` 내용을 정상적으로 반환했다.
+
+이를 통해 다음 항목을 검증했다.
+
+* 커스텀 이미지 빌드 성공
+* 커스텀 이미지 기반 컨테이너 실행 성공
+* 호스트 8080번 포트와 컨테이너 80번 포트 연결 성공
+* NGINX 웹 서버 응답 성공
+* 직접 작성한 HTML 콘텐츠 제공 성공
+
+### 8.3 브라우저 접속 주소
+
+```text
+http://localhost:8080
+```
+
+브라우저 접속 화면을 캡처한 뒤 저장소에 추가하고 다음과 같이 첨부한다.
+
+```markdown
+![커스텀 NGINX 브라우저 접속 결과](images/nginx-browser.png)
+```
+
+
+
+
 ```
 깃허브에 푸쉬 작업
 ```
@@ -266,3 +600,4 @@ Compressing objects: 100% (2/2), done.
 Writing objects: 100% (3/3), 2.02 KiB | 2.02 MiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
 ```
+
