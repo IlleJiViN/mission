@@ -604,4 +604,17 @@ Compressing objects: 100% (2/2), done.
 Writing objects: 100% (3/3), 2.02 KiB | 2.02 MiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
 ```
-
+```
+깃허브 연동 로그
+jeonyeongjin05222811@c6r9s4 git-practice % git config --list
+credential.helper=osxkeychain
+user.name=IlleJiViN
+user.email=jeonyeongjin0522@gmail.com
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+core.ignorecase=true
+core.precomposeunicode=true
+:
+```
