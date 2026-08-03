@@ -28,8 +28,59 @@ os 환경  macos
 ```터미널 조작 로그 기록```
 ```현재 위치 확인 pwd 결과: /Users/jeonyeongjin05222811/git-practice```
 ```목록 확인(숨김 파일 포함) ls -al #- 뒤 옵션 a는 전ㅂ누 보이게함, l은 세부사항, 수정 가능 여부 등 접근 권한 보임```
-```결과 ls -a 
-.		..		.git		README.md```
+```결과 ls -a # -l 길어서 제외```
+```.		..		.git		README.md```
+```빈 파일 만들기 touch [파일 이름] #이 파일 이름이 있으면 이 파일의 생성 시간 등이 나옴```
+```touch helo```
+```디렉터리 생성 mkdir```
+```mkdir rid```
+```파일 이동/이름 바꾸기 mv```
+```이름 바꾸기 mv [파일명] [바꿀 이름]```
+```사용법: mv [파일명] [옮길 디렉터리]```
+```mv helo rid```
+```파일 복사 cp [복사할 파일 명] [복사할 위치]```
+```cp helo rid```
+```권한 확인법 ls -l```
+```ex)jeonyeongjin05222811@c6r9s4 git-practice % ls -l 
+total 16
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md```
+
+```
+```권한 수정법 chmod```
+```8진수로 표현, rwx순으로,1은 가능 0은 불가능 유저, 모든 사용자, 그룹```
+```chmod 755 README.md```
+```파일 수정 로그```
+```jeonyeongjin05222811@c6r9s4 git-practice % ls 
+README.md
+jeonyeongjin05222811@c6r9s4 git-practice % touch a 
+jeonyeongjin05222811@c6r9s4 git-practice % ls
+a               README.md
+jeonyeongjin05222811@c6r9s4 git-practice % ls -l
+total 16
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811     0 Aug  3 18:20 a
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
+jeonyeongjin05222811@c6r9s4 git-practice % chmod 777 a 
+jeonyeongjin05222811@c6r9s4 git-practice % ls -l
+total 16
+-rwxrwxrwx  1 jeonyeongjin05222811  jeonyeongjin05222811     0 Aug  3 18:20 a
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
+```디렉터리 수정 로그```
+```jeonyeongjin05222811@c6r9s4 git-practice % mkdir b 
+jeonyeongjin05222811@c6r9s4 git-practice % ls -l 
+total 16
+-rwxrwxrwx  1 jeonyeongjin05222811  jeonyeongjin05222811     0 Aug  3 18:20 a
+drwxr-xr-x  2 jeonyeongjin05222811  jeonyeongjin05222811    64 Aug  3 18:22 b
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
+jeonyeongjin05222811@c6r9s4 git-practice % chmod 777 b 
+jeonyeongjin05222811@c6r9s4 git-practice % ls -l 
+total 16
+-rwxrwxrwx  1 jeonyeongjin05222811  jeonyeongjin05222811     0 Aug  3 18:20 a
+drwxrwxrwx  2 jeonyeongjin05222811  jeonyeongjin05222811    64 Aug  3 18:22 b
+-rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
+jeonyeongjin05222811@c6r9s4 git-practice % ```
+
+
+```docker installation & setting```
 도커 버전 확인
 커맨드
 docker --version
