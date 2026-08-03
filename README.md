@@ -95,6 +95,7 @@ Dockerfile      index.html
 사용법: mv [파일명] [옮길 디렉터리]
 
 ```
+```
 mv helo rid
 
 ```
@@ -106,7 +107,6 @@ mv helo rid
 ```
 
 ```
-
 cp helo rid
 
 ```
@@ -124,11 +124,15 @@ total 16
 -rw-r--r--  1 jeonyeongjin05222811  jeonyeongjin05222811  5182 Aug  3 18:15 README.md
 
 ```
-```
+
 ```권한 수정법 chmod```
+
 ```8진수로 표현, rwx순으로,1은 가능 0은 불가능 유저, 모든 사용자, 그룹```
+
 ```chmod 755 README.md```
+
 ```파일 수정 로그```
+
 ```jeonyeongjin05222811@c6r9s4 git-practice % ls 
 README.md
 jeonyeongjin05222811@c6r9s4 git-practice % touch a 
@@ -584,9 +588,6 @@ http://localhost:8080
 
 브라우저 접속 화면을 캡처한 뒤 저장소에 추가하고 다음과 같이 첨부한다.
 
-```markdown
-![커스텀 NGINX 브라우저 접속 결과](images/nginx-browser.png)
-```
 
 
 
